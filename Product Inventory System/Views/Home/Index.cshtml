@@ -1,0 +1,104 @@
+﻿@model PaginatedList<Product>
+
+@{
+    ViewData["Title"] = "Product Inventory";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<a asp-action="Create" class="btn btn-primary">Create Product</a>
+
+<form asp-action="Index" method="get">
+    <p>
+        <input type="text" name="searchString" value="@ViewBag.CurrentFilter" placeholder="Search by name...">
+        <input type="submit" value="Search">
+    </p>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                @Html.ActionLink("Category", "Index", new { sortOrder = ViewBag.CategorySort })
+            </th>
+            <th>
+                Price
+            </th>
+            <th>
+                Quantity
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                 <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="Product navigation">
+            <ul class="pagination">
+                @if (Model.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index"
+                       asp-route-sortOrder="@ViewBag.CurrentSortOrder"
+                       asp-route-pageNumber="@(Model.PageIndex - 1)"
+                       asp-route-searchString="@ViewBag.CurrentFilter">Previous</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled"><a class="page-link">Previous</a></li>
+                }
+                @foreach (var i in Enumerable.Range(1, Model.TotalPages))
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link" asp-action="Index"
+                       asp-route-sortOrder="@ViewBag.CurrentSortOrder"
+                       asp-route-pageNumber="@i"
+                       asp-route-searchString="@ViewBag.CurrentFilter">@i</a>
+                    </li>
+                }
+                @if (Model.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index"
+                       asp-route-sortOrder="@ViewBag.CurrentSortOrder"
+                       asp-route-pageNumber="@(Model.PageIndex + 1)"
+                       asp-route-searchString="@ViewBag.CurrentFilter">Next</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled"><a class="page-link">Next</a></li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>
